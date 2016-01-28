@@ -11,7 +11,8 @@ PololuLedStrip<LED_SIGNAL_PIN> ledStrip;
 #define LED_COUNT 150
 rgb_color colors[LED_COUNT];
 
-#define COUNTER_WORDS (LED_COUNT/32)
+#define WORD_SIZE 16
+#define COUNTER_WORDS (1+LED_COUNT/WORD_SIZE)
 
 // system timer, incremented by one every time through the main loop
 unsigned int loopCount[COUNTER_WORDS];
@@ -54,8 +55,8 @@ void loop()
   clearOff();
   for (int i = 0; i < LED_COUNT/2; i++)
   {
-    int bit = i % 32;
-    if ((loopCount[i / 32] & (1 << bit)) != 0) {
+    int bit = i % WORD_SIZE;
+    if ((loopCount[i / WORD_SIZE] & (1 << bit)) != 0) {
       colors[i*2] = color;
     }
   }
