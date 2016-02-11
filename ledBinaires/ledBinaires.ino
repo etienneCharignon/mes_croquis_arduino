@@ -11,13 +11,13 @@ PololuLedStrip<LED_SIGNAL_PIN> ledStrip;
 #define LED_COUNT 150
 rgb_color colors[LED_COUNT];
 
-#define WORD_SIZE 16
+#define WORD_SIZE 8 // use 8 size words to match EEPROM capacity.
 #define WORDS_COUNT (1+(LED_COUNT/2)/WORD_SIZE)
 
 #define PERIODE 20 // millisecondes
 
 // system timer, incremented by one every time through the main loop
-unsigned int loopCount[WORDS_COUNT];
+byte loopCount[WORDS_COUNT];
 
 unsigned int seed = 0;  // used to initialize random number generator
 
@@ -40,8 +40,8 @@ void setup()
   clearOff();
   
   for(int i = 0; i < WORDS_COUNT; i++) {
-    loopCount[i] = 0; // first run that programme with that line, for 1 minute then comment and uncomment the next one
-    //loopCount[i] = EEPROM.read(i+1);
+    //loopCount[i] = 0; // first run that programme with that line, for 1 minute then comment and uncomment the next one
+    loopCount[i] = EEPROM.read(i+1);
   }
  
 }
@@ -68,7 +68,8 @@ void loop()
   incrementCounter(loopCount);
 }
 
-void incrementCounter(unsigned int *p) {
+void incrementCounter(byte *p) {
+  
   while(!++*(p++));
   
   if(loopCount[0] % (1000/PERIODE * 60) == 0) { // write eeprom every minutes
