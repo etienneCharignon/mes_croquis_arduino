@@ -1,5 +1,6 @@
 #include <PololuLedStrip.h>
 #include <EEPROM.h>
+#include <SimpleTimer.h>
 
 // Create an ledStrip object on pin 11.
 #define LED_SIGNAL_PIN 11
@@ -23,6 +24,8 @@ unsigned int seed = 0;  // used to initialize random number generator
 
 rgb_color color = getRandomColor();
 
+SimpleTimer timer;
+
 // initialization stuff
 void setup()
 {
@@ -43,16 +46,26 @@ void setup()
     //loopCount[i] = 0; // first run that programme with that line, for 1 minute then comment and uncomment the next one
     loopCount[i] = EEPROM.read(i+1);
   }
+  
+  timer.setInterval(PERIODE, repeatMe);
  
 }
 
 // main loop
 void loop()
 {
-  delay(PERIODE);
+  timer.run();
+}
+
+void repeatMe() {
   
   if(loopCount[0] % (1000/PERIODE * 3)== 0) {
     color = getRandomColor();
+  }
+  if(loopCount[0] % (1000/PERIODE * 60) == 0) { // write eeprom every minutes
+    for(int i = 0; i < WORDS_COUNT; i++) {
+      EEPROM.write(i+1, loopCount[i]);
+    }    
   }
   
   clearOff();
@@ -68,15 +81,8 @@ void loop()
   incrementCounter(loopCount);
 }
 
-void incrementCounter(byte *p) {
-  
+void incrementCounter(byte *p) {  
   while(!++*(p++));
-  
-  if(loopCount[0] % (1000/PERIODE * 60) == 0) { // write eeprom every minutes
-    for(int i = 0; i < WORDS_COUNT; i++) {
-      EEPROM.write(i+1, loopCount[i]);
-    }
-  }
 }
 
 void clearOff() {
