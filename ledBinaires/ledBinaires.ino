@@ -55,6 +55,12 @@ void loop()
     color = getRandomColor();
   }
   
+  if(loopCount[0] % (1000/PERIODE * 60) == 0) { // write eeprom every minutes
+    for(int i = 0; i < WORDS_COUNT; i++) {
+      EEPROM.write(i+1, loopCount[i]);
+    }
+  }
+  
   clearOff();
   for (int i = 0; i < LED_COUNT/2; i++)
   {
@@ -69,14 +75,7 @@ void loop()
 }
 
 void incrementCounter(byte *p) {
-  
   while(!++*(p++));
-  
-  if(loopCount[0] % (1000/PERIODE * 60) == 0) { // write eeprom every minutes
-    for(int i = 0; i < WORDS_COUNT; i++) {
-      EEPROM.write(i+1, loopCount[i]);
-    }
-  }
 }
 
 void clearOff() {
