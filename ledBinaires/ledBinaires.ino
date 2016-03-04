@@ -14,7 +14,7 @@ rgb_color colors[LED_COUNT];
 #define WORD_SIZE 8 // use 8 size words to match EEPROM capacity.
 #define WORDS_COUNT (1+(LED_COUNT/2)/WORD_SIZE)
 
-#define PERIODE 20 // millisecondes
+#define PERIODE 22 // millisecondes
 
 // system timer, incremented by one every time through the main loop
 byte loopCount[WORDS_COUNT];
